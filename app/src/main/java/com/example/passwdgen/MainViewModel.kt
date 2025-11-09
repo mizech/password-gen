@@ -15,24 +15,36 @@ class MainViewModel(): ViewModel() {
         = MutableStateFlow<String>("0")
     val passwd: StateFlow<String> = _passwd.asStateFlow()
 
-    fun generatePasswd(length: Int, options: List<Boolean>) { // https://www.youtube.com/watch?v=aH9_wsw-KLI&list=PLLJ3IUzdiq18exhhrM7FW_zzcY1gnuvZM&index=3
+    fun generatePasswd(length: Int, options: List<Option>) {
+        var feasibleChars = mutableListOf<Char>()
         var result = ""
 
-        if (options[0]) {
-            println("Contains UP.")
-        }
-        if (options[1]) {
-            println("Contains LOW.")
-        }
-        if (options[2]) {
-            println("Contains UP.")
-        }
-        if (options[3]) {
-            println("Contains UP.")
+        options.forEach {
+            if (it.title == Option.UP.title && it.isActive) {
+                feasibleChars.addAll(('A'..'Z').toList())
+                println("Contains UP.")
+            }
+
+            if (it.title == Option.LOW.title && it.isActive) {
+                feasibleChars.addAll(('a'..'z').toList())
+                println("Contains LOW.")
+            }
+
+            if (it.title == Option.NUM.title && it.isActive) {
+                feasibleChars.addAll(('0'..'9').toList())
+                println("Contains NUM.")
+            }
+
+            if (it.title == Option.SPEC.title && it.isActive) {
+                val specs = listOf<Char>('!', '"', '§', '$', '%', '&', '/', '(', ')', '=',
+                    '?', '+', '*', '#', '-', '_', ',', ';', '<', '>')
+                feasibleChars.addAll(specs)
+                println("Contains SPEC.")
+            }
         }
 
         while (true) {
-            result += Random.nextInt(from = 0, until = 9).toString()
+            result += feasibleChars.random()
 
             if (result.length == length) {
                 break

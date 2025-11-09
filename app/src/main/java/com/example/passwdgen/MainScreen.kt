@@ -1,5 +1,7 @@
 package com.example.passwdgen
 
+import android.icu.number.NumberFormatter
+import android.icu.text.NumberFormat
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,6 +31,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import java.util.Locale
 import androidx.compose.ui.unit.dp
 
 enum class Option(var isActive: Boolean, var title: String) {
@@ -46,11 +49,11 @@ fun MainScreen() {
     }
 
     val options = remember {
-        mutableStateListOf<Boolean>(
-            Option.UP.isActive,
-            Option.LOW.isActive,
-            Option.NUM.isActive,
-            Option.SPEC.isActive)
+        mutableStateListOf<Option>(
+            Option.UP,
+            Option.LOW,
+            Option.NUM,
+            Option.SPEC)
     }
 
     var selectedLength = remember {
@@ -89,17 +92,26 @@ fun MainScreen() {
                     }
                 }
             }
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween) {
                 for (i in 0 until options.size) {
                     Text(text = options[i].toString())
-                    Checkbox(checked = options[i], onCheckedChange = {
-                        options[i] = !options[i]
+                    Checkbox(checked = options[i].isActive, onCheckedChange = {
+                        var temp = options.toList()
+
+                        for (j in 0 until temp.size) {
+                            if (i == j) {
+                                temp[i].isActive = !temp[i].isActive
+                            }
+                        }
+                        options.clear()
+                        options.addAll(temp)
                     })
                 }
             }
             Text(text = mainVM.passwd.collectAsState().value,
                 fontSize = 30.sp, fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 30.dp))
+                modifier = Modifier.padding(top = 25.dp, bottom = 30.dp))
             Button(onClick = {
                 mainVM.generatePasswd(length = selectedLength.value,
                     options = options.toList())
@@ -111,3 +123,4 @@ fun MainScreen() {
         }
     }
 }
+
