@@ -14,6 +14,7 @@ class MainViewModel(): ViewModel() {
     private val _passwd
         = MutableStateFlow<String>("0")
     val passwd: StateFlow<String> = _passwd.asStateFlow()
+    // Todo: Display the length of selected chars in the UI.
     // Todo: Add a copy-to-clipboard button.
     // Todo: Improve the algorithm (Each group of char HAS to be included, in case of selected).
     fun generatePasswd(length: Int, options: List<Option>) {
