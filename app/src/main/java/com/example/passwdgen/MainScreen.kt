@@ -71,12 +71,12 @@ fun MainScreen() {
                     paddingValues.calculateTopPadding()))
             Box(modifier = Modifier.padding(20.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(text = "Length: ")
                     IconButton(onClick = {
                         isExpanded = !isExpanded
                     }) {
                         Icon(Icons.Default.List, contentDescription = "")
                     }
+                    Text(text = "Length: ${selectedLength.value}")
                 }
                 DropdownMenu(expanded = isExpanded,
                     onDismissRequest = {
@@ -95,18 +95,20 @@ fun MainScreen() {
             Row(verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween) {
                 for (i in 0 until options.size) {
-                    Text(text = options[i].toString())
-                    Checkbox(checked = options[i].isActive, onCheckedChange = {
-                        var temp = options.toList()
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Checkbox(checked = options[i].isActive, onCheckedChange = {
+                            var temp = options.toList()
 
-                        for (j in 0 until temp.size) {
-                            if (i == j) {
-                                temp[i].isActive = !temp[i].isActive
+                            for (j in 0 until temp.size) {
+                                if (i == j) {
+                                    temp[i].isActive = !temp[i].isActive
+                                }
                             }
-                        }
-                        options.clear()
-                        options.addAll(temp)
-                    })
+                            options.clear()
+                            options.addAll(temp)
+                        })
+                        Text(text = options[i].toString())
+                    }
                 }
             }
             Text(text = mainVM.passwd.collectAsState().value,
